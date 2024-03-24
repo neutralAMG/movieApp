@@ -83,14 +83,6 @@ btnFoward.addEventListener("click", ()=>{
         makeMovieCards(data.results)})
 } )
 
-function goBack(counter) {
-
-}
-
-function GoFoward(counter) {
-
-}
-
 
 function changePage(movie) {
     if (sessionStorage.getItem("movie")) {
