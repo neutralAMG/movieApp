@@ -7,7 +7,7 @@ const PageCounter = document.querySelector(".page__counter")
 
 const btnFoward = document.querySelector(".page__foward")
 
-let apiKey = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyYjg1YzdmYTBhNGNlMmIyY2EwMGE5YTU0N2IxNTQ0NyIsInN1YiI6IjY1Zjg0ZTBjZTE5NGIwMDE2M2JmMjNjYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.33yZD8_SL_hV-heX9GH80wM1aDrOG8nTp9haoLpyDdo'
+let apiKey = 'Your api key here'
 
 const mainDiv = document.querySelector(".body__movieCards")
 const options = {
