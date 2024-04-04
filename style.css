@@ -62,7 +62,7 @@ body {
 }
 
 .page {
-  width: 25%;
+  width: 55px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -78,6 +78,10 @@ body {
   cursor: pointer;
 }
 
+.page > p {
+  width: 50px;
+  text-align: center;
+}
 .container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

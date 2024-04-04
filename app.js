@@ -1,10 +1,20 @@
 
-let counter  = 1
+
+
+let operation = {
+    add: "up",
+    sustract: "down",
+    none: "none"
+    }
+
+
 let url = `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=`
+
+let movies = []
 
 const btnBack = document.querySelector(".page__back")
 const PageCounter = document.querySelector(".page__counter")
-
+PageCounter.innerHTML = UpdateCounter(operation.none)
 const btnFoward = document.querySelector(".page__foward")
 
 let apiKey = 'Your api key here'
@@ -24,7 +34,7 @@ if (!responde.ok) {
     const errorMessage = "Error fecthing data form the api"
     throw Error(errorMessage)
 }
-const data = responde.json()
+const data = await responde.json()
 
  return data
 }
@@ -32,7 +42,33 @@ const data = responde.json()
 
 
 // TODO: make sure that when we comback to this page we have the same data that when we left
-fetchData(counter).then( data => makeMovieCards(data.results));
+fetchData(UpdateCounter(operation.none)).then( data => {
+    
+    // console.log(counter);
+    RenderPage(data.results.length > 0? data.results : []) 
+
+}
+);
+
+function RenderPage(data) {
+    let catchData = JSON.parse(sessionStorage.getItem("Page")) 
+    movies = []
+    
+    if(!data || data.length === 0) return console.log("Datos no recividos")
+
+    if (!catchData) {
+        sessionStorage.setItem("Page", JSON.stringify(data))
+        movies = data
+        makeMovieCards(movies)
+     return
+    }
+    sessionStorage.setItem("Page", JSON.stringify(data))
+     movies = JSON.parse(sessionStorage.getItem("Page")) 
+     makeMovieCards(movies)
+    
+    
+    console.log(data)
+}
 
 function makeMovieCards(data) {
     mainDiv.innerHTML ="";
@@ -67,20 +103,21 @@ function makeMovieCards(data) {
 }
 
 btnBack.addEventListener("click", () => {
-    if(counter === 1) return
-    counter--
+    let counter = UpdateCounter(operation.sustract);
+    // counter--
     PageCounter.innerHTML = counter
     fetchData(counter).then(data => {
         console.log(data)
-        makeMovieCards(data.results)})
+        RenderPage(data.results)})
 } )
 
 btnFoward.addEventListener("click", ()=>{
-    counter++
+    // counter++
+    let counter = UpdateCounter(operation.add);
     PageCounter.innerHTML = counter
     fetchData(counter).then(data => {
         console.log(data)
-        makeMovieCards(data.results)})
+        RenderPage(data.results)})
 } )
 
 
@@ -91,4 +128,15 @@ function changePage(movie) {
     }
     sessionStorage.setItem("movie", JSON.stringify(movie));
     document.location.href = "index2.html"
+}
+
+function UpdateCounter(operation) {
+    let counterGetter = sessionStorage.getItem("counter");
+    let counter = counterGetter ? parseInt(counterGetter) : 1;
+
+    if(operation === "up") counter++
+    if(operation === "down" && counter > 1) counter--
+    
+    sessionStorage.setItem("counter", JSON.stringify(counter));
+   return parseInt(sessionStorage.getItem("counter"))
 }
