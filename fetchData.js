@@ -1,7 +1,7 @@
 
 const PageDiv = document.querySelector(".container");
 const BtnGoToPrivieusPage = document.querySelector(".btnBack")
-const movie = JSON.parse(sessionStorage.getItem("movie")) 
+const movie = JSON.parse(sessionStorage.getItem("movie")) ;
 
 
 BtnGoToPrivieusPage.addEventListener("click", ()=>{

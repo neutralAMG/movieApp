@@ -24,19 +24,36 @@ const options = {
     method: 'GET',
     headers: {
       accept: 'application/json',
-      Authorization: apiKey
+      Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyYjg1YzdmYTBhNGNlMmIyY2EwMGE5YTU0N2IxNTQ0NyIsIm5iZiI6MTcxMDc3MTcyNC4yNjMsInN1YiI6IjY1Zjg0ZTBjZTE5NGIwMDE2M2JmMjNjYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.9t2Dh7OvCysZgaKdlDhtC4fc87x4Dc_0tDR6AUA7cdU"
     }
   };
 
 async function fetchData(counter) {
-const responde = await fetch (url + counter, options)
-if (!responde.ok) {
-    const errorMessage = "Error fecthing data form the api"
-    throw Error(errorMessage)
-}
-const data = await responde.json()
+debugger
+    let catchData = JSON.parse(sessionStorage.getItem("Page"))
+     let dataToReturn;
+   //  console.log(catchData);
+if(catchData != undefined && catchData.length > 0 ){
 
- return data
+     catchData.forEach(element => {
+       if(element.id === counter) return  dataToReturn = element.movies;
+    }); 
+}
+console.log(dataToReturn);
+if(dataToReturn === undefined){
+      const responde = await fetch (url + counter, options)
+      if (!responde.ok) {
+      const errorMessage = "Error fecthing data form the api"
+      throw Error(errorMessage)
+    }
+   const data = await responde.json()
+   let dataToStore = catchData || []
+   dataToStore.push({id: data.page, movies: data.results}) ;
+
+   sessionStorage.setItem("Page",JSON.stringify(dataToStore));
+   dataToReturn = data.results;
+}
+ return dataToReturn
 }
 
 
@@ -44,31 +61,10 @@ const data = await responde.json()
 // TODO: make sure that when we comback to this page we have the same data that when we left
 fetchData(UpdateCounter(operation.none)).then( data => {
     
-    // console.log(counter);
-    RenderPage(data.results.length > 0? data.results : []) 
+     makeMovieCards(data) 
 
 }
 );
-
-function RenderPage(data) {
-    let catchData = JSON.parse(sessionStorage.getItem("Page")) 
-    movies = []
-    
-    if(!data || data.length === 0) return console.log("Datos no recividos")
-
-    if (!catchData) {
-        sessionStorage.setItem("Page", JSON.stringify(data))
-        movies = data
-        makeMovieCards(movies)
-     return
-    }
-    sessionStorage.setItem("Page", JSON.stringify(data))
-     movies = JSON.parse(sessionStorage.getItem("Page")) 
-     makeMovieCards(movies)
-    
-    
-    console.log(data)
-}
 
 function makeMovieCards(data) {
     mainDiv.innerHTML ="";
@@ -104,20 +100,17 @@ function makeMovieCards(data) {
 
 btnBack.addEventListener("click", () => {
     let counter = UpdateCounter(operation.sustract);
-    // counter--
     PageCounter.innerHTML = counter
     fetchData(counter).then(data => {
-        console.log(data)
-        RenderPage(data.results)})
+
+        makeMovieCards(data)})
 } )
 
 btnFoward.addEventListener("click", ()=>{
-    // counter++
     let counter = UpdateCounter(operation.add);
     PageCounter.innerHTML = counter
     fetchData(counter).then(data => {
-        console.log(data)
-        RenderPage(data.results)})
+        makeMovieCards(data)})
 } )
 
 
